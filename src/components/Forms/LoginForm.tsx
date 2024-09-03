@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import { FaUser, FaLock } from "react-icons/fa";
-import { useAuth } from "../Context/AuthContext"; // Assure-toi d'importer le bon chemin
+import { useAuth } from "../Context/AuthProvider"; // Assure-toi d'importer le bon chemin
 
 interface LoginFormProps {
   handleClose: () => void; // Fonction pour fermer le modal

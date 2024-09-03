@@ -1,12 +1,30 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import axios from "axios";
 
+// Définir les interfaces
+interface RoleDTO {
+  id: number;
+  nomRole: string;
+}
+
+interface UserAuthentified {
+  id: number;
+  nomUtilisateur: string;
+  prenomUtilisateur: string;
+  emailUtilisateur: string;
+  dateCreation: [number, number, number];
+  isactive: boolean;
+  numeroBeneficiaireStagiaire: string;
+  dateNaissance: [number, number, number];
+  roleDTO: RoleDTO;
+}
+
 // Définir le type de contexte d'authentification
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (login: string, password: string) => Promise<void>;
   logout: () => void;
-  user: string | null; // Exemple d'ajout pour stocker l'utilisateur connecté
+  user: UserAuthentified | null;
 }
 
 // Créer le contexte d'authentification
@@ -17,7 +35,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<UserAuthentified | null>(null);
 
   // Fonction de connexion
   const login = async (login: string, password: string) => {
@@ -26,14 +44,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         "http://localhost:8081/api-nextline/auth/login",
         { login, password }
       );
+
       if (response.data.token) {
         setIsAuthenticated(true);
-        setUser(login);
+
+        // Stock l'utilisateur authentifié dans mon context
+        const userData: UserAuthentified = response.data.user;
+        setUser(userData);
 
         localStorage.setItem("authToken", response.data.token);
       }
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Échec de la connexion:", error);
     }
   };
 
@@ -52,7 +74,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 };
 
 // Hook personnalisé pour utiliser le contexte d'authentification
-
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {

@@ -1,8 +1,9 @@
 import React from "react";
-import { useAuth } from "../Context/AuthContext"; // Assure-toi d'importer le bon chemin
+import { useAuth } from "../Context/AuthProvider";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
 import LoginForm from "../Forms/LoginForm";
 import { Button } from "react-bootstrap";
 import {
@@ -12,6 +13,7 @@ import {
   FaInfoCircle,
   FaCogs,
   FaEnvelope,
+  FaUser,
 } from "react-icons/fa";
 
 const NavBar: React.FC = () => {
@@ -23,36 +25,67 @@ const NavBar: React.FC = () => {
 
   return (
     <>
-      <Navbar bg="light" expand="lg">
+      <Navbar
+        bg="light"
+        expand="lg"
+        className="shadow-sm p-3 mb-5 bg-white rounded sticky-top"
+        style={{ zIndex: 1000 }}
+      >
         <Container>
-          <Navbar.Brand href="#home">Next-Line 🚀</Navbar.Brand>
+          <Navbar.Brand href="#home" className="fw-bold text-primary">
+            Next-Line 🚀
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="#home">
-                <FaHome /> Accueil
+              <Nav.Link href="#home" className="d-flex align-items-center">
+                <FaHome className="me-2" /> Accueil
               </Nav.Link>
-              <Nav.Link href="#about">
-                <FaInfoCircle /> À Propos
+              <Nav.Link href="#about" className="d-flex align-items-center">
+                <FaInfoCircle className="me-2" /> À Propos
               </Nav.Link>
-              <Nav.Link href="#services">
-                <FaCogs /> Services
+              <Nav.Link href="#services" className="d-flex align-items-center">
+                <FaCogs className="me-2" /> Services
               </Nav.Link>
-              <Nav.Link href="#contact">
-                <FaEnvelope /> Contact
+              <Nav.Link href="#contact" className="d-flex align-items-center">
+                <FaEnvelope className="me-2" /> Contact
               </Nav.Link>
             </Nav>
-            <Nav className="ml-auto">
+            <Nav className="ms-auto">
               {isAuthenticated ? (
                 <>
-                  <Navbar.Text className="me-3">Bonjour, {user} 👋</Navbar.Text>
-                  <Button variant="outline-danger" onClick={logout}>
-                    <FaSignOutAlt /> Déconnexion
-                  </Button>
+                  <NavDropdown
+                    title={`Bonjour, ${
+                      user
+                        ? user.nomUtilisateur + " " + user.prenomUtilisateur
+                        : "Invité"
+                    } 👋`}
+                    id="user-dropdown"
+                    align="end"
+                    className="me-3"
+                  >
+                    <NavDropdown.Item href="#profile">
+                      <FaUser className="me-2" /> Mon Profil
+                    </NavDropdown.Item>
+                    <NavDropdown.Item href="#settings">
+                      <FaCogs className="me-2" /> Paramètres
+                    </NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item onClick={logout}>
+                      <FaSignOutAlt className="me-2" /> Déconnexion
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                  <Navbar.Text className="me-3 text-muted">
+                    {user?.roleDTO.nomRole}
+                  </Navbar.Text>
                 </>
               ) : (
-                <Button variant="primary" onClick={handleShowLoginForm}>
-                  <FaSignInAlt /> Connexion
+                <Button
+                  variant="primary"
+                  onClick={handleShowLoginForm}
+                  className="d-flex align-items-center"
+                >
+                  <FaSignInAlt className="me-2" /> Connexion
                 </Button>
               )}
             </Nav>
