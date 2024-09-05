@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from "../Context/AuthProvider";
+import { useAuth } from "../../Context/auth/AuthContextHook";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -15,6 +15,7 @@ import {
   FaEnvelope,
   FaUser,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const NavBar: React.FC = () => {
   const { isAuthenticated, logout, user } = useAuth();
@@ -22,6 +23,9 @@ const NavBar: React.FC = () => {
 
   const handleShowLoginForm = () => setShowLoginForm(true);
   const handleCloseLoginForm = () => setShowLoginForm(false);
+
+  console.log("isAuthenticated:", isAuthenticated);
+  console.log("user:", user);
 
   return (
     <>
@@ -64,9 +68,15 @@ const NavBar: React.FC = () => {
                     align="end"
                     className="me-3"
                   >
-                    <NavDropdown.Item href="#profile">
-                      <FaUser className="me-2" /> Mon Profil
-                    </NavDropdown.Item>
+                    <Link to="/profile" className="dropdown-item">
+                      <FaUser className="me-2" /> Profile
+                    </Link>
+                    {user?.roleDTO.nomRole === "FORMATEUR" &&
+                      isAuthenticated && (
+                        <Link to="/internList" className="dropdown-item">
+                          <FaUser className="me-2" /> Liste des stagiaires
+                        </Link>
+                      )}
                     <NavDropdown.Item href="#settings">
                       <FaCogs className="me-2" /> Paramètres
                     </NavDropdown.Item>
