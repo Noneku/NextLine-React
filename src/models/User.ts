@@ -16,7 +16,6 @@ export class User {
   private numeroSecuStagiaire?: string;
 
   constructor(
-    id: number | undefined | null,
     nomUtilisateur: string,
     prenomUtilisateur: string,
     emailUtilisateur: string,
