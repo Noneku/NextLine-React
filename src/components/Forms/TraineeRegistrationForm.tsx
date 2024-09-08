@@ -1,40 +1,19 @@
 import React, { useState } from "react";
-
-// Définition des types pour les données du formulaire
-type RoleDTO = {
-  id: number;
-  nomRole: string;
-};
-
-type TraineeFormData = {
-  nomUtilisateur: string;
-  prenomUtilisateur: string;
-  utilisateurLogin: string;
-  emailUtilisateur: string;
-  mdpUtilisateur: string;
-  dateCreation: string;
-  isactive: boolean;
-  numeroSecuStagiaire: string;
-  numeroBeneficiaireStagiaire: string;
-  dateNaissance: string;
-  roleDTO: RoleDTO;
-};
+import { createUser } from "../../services/apiService";
+import { User } from "../../models/User";
 
 // Composant principal pour le formulaire d'enregistrement
 const TraineeRegistrationForm: React.FC = () => {
   // État pour les données du formulaire
-  const [formData, setFormData] = useState<TraineeFormData>({
+  const [formData, setFormData] = useState<User>({
     nomUtilisateur: "",
     prenomUtilisateur: "",
-    utilisateurLogin: "",
     emailUtilisateur: "",
-    mdpUtilisateur: "",
-    dateCreation: new Date().toISOString().split("T")[0], // Date du jour par défaut
-    isactive: true,
-    numeroSecuStagiaire: "",
-    numeroBeneficiaireStagiaire: "",
-    dateNaissance: "",
-    roleDTO: { id: 1, nomRole: "STAGIAIRE" },
+    dateCreation: new Date().toISOString().split("T")[0],
+    numeroBeneficiaireStagiaire: null,
+    isactive: false,
+    dateNaissance: null,
+    roleDTO: { id: 2, nomRole: "STAGIAIRE" },
   });
 
   // Gestion des changements dans les champs du formulaire
@@ -44,9 +23,15 @@ const TraineeRegistrationForm: React.FC = () => {
   };
 
   // Gestion de la soumission du formulaire
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // À compléter : Ajouter la logique pour gérer l'enregistrement des données
+
+    try {
+      await createUser(formData); // Appel de la fonction createUser avec les données du formulaire
+      alert("Utilisateur créé avec succès !");
+    } catch (error) {
+      console.error("Erreur lors de la création de l'utilisateur", error);
+    }
     console.log("Formulaire soumis avec les données :", formData);
   };
 
@@ -85,21 +70,6 @@ const TraineeRegistrationForm: React.FC = () => {
         </div>
 
         <div style={styles.formGroup}>
-          <label htmlFor="utilisateurLogin" style={styles.label}>
-            Login :
-          </label>
-          <input
-            type="text"
-            id="utilisateurLogin"
-            name="utilisateurLogin"
-            value={formData.utilisateurLogin}
-            onChange={handleChange}
-            style={styles.input}
-            required
-          />
-        </div>
-
-        <div style={styles.formGroup}>
           <label htmlFor="emailUtilisateur" style={styles.label}>
             Email :
           </label>
@@ -108,66 +78,6 @@ const TraineeRegistrationForm: React.FC = () => {
             id="emailUtilisateur"
             name="emailUtilisateur"
             value={formData.emailUtilisateur}
-            onChange={handleChange}
-            style={styles.input}
-            required
-          />
-        </div>
-
-        <div style={styles.formGroup}>
-          <label htmlFor="mdpUtilisateur" style={styles.label}>
-            Mot de passe :
-          </label>
-          <input
-            type="password"
-            id="mdpUtilisateur"
-            name="mdpUtilisateur"
-            value={formData.mdpUtilisateur}
-            onChange={handleChange}
-            style={styles.input}
-            required
-          />
-        </div>
-
-        <div style={styles.formGroup}>
-          <label htmlFor="dateNaissance" style={styles.label}>
-            Date de naissance :
-          </label>
-          <input
-            type="date"
-            id="dateNaissance"
-            name="dateNaissance"
-            value={formData.dateNaissance}
-            onChange={handleChange}
-            style={styles.input}
-            required
-          />
-        </div>
-
-        <div style={styles.formGroup}>
-          <label htmlFor="numeroSecuStagiaire" style={styles.label}>
-            Numéro de Sécurité Sociale :
-          </label>
-          <input
-            type="text"
-            id="numeroSecuStagiaire"
-            name="numeroSecuStagiaire"
-            value={formData.numeroSecuStagiaire}
-            onChange={handleChange}
-            style={styles.input}
-            required
-          />
-        </div>
-
-        <div style={styles.formGroup}>
-          <label htmlFor="numeroBeneficiaireStagiaire" style={styles.label}>
-            Numéro de Bénéficiaire :
-          </label>
-          <input
-            type="text"
-            id="numeroBeneficiaireStagiaire"
-            name="numeroBeneficiaireStagiaire"
-            value={formData.numeroBeneficiaireStagiaire}
             onChange={handleChange}
             style={styles.input}
             required

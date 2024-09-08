@@ -1,5 +1,6 @@
 import React, { createContext, useState, ReactNode } from "react";
-import { AuthContextType, UserAuthentified } from "./AuthContextType";
+import { AuthContextType } from "./AuthContextType";
+import { User } from "../../models/User";
 import { loginUser } from "../../services/apiService";
 
 // Créer le contexte d'authentification
@@ -12,7 +13,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<UserAuthentified | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const login = async (login: string, password: string) => {
     try {
