@@ -1,6 +1,7 @@
 import { RoleDTO } from "./RoleDTO"; // Assurez-vous que roleDTO est défini dans un fichier approprié
 
 export class User {
+  idUtilisateur: number;
   nomUtilisateur: string;
   prenomUtilisateur: string;
   emailUtilisateur: string;
@@ -16,6 +17,7 @@ export class User {
   private numeroSecuStagiaire?: string;
 
   constructor(
+    idUtilisateur: number,
     nomUtilisateur: string,
     prenomUtilisateur: string,
     emailUtilisateur: string,
@@ -28,6 +30,7 @@ export class User {
     mdpUtilisateur?: string,
     numeroSecuStagiaire?: string
   ) {
+    this.idUtilisateur = idUtilisateur;
     this.nomUtilisateur = nomUtilisateur;
     this.prenomUtilisateur = prenomUtilisateur;
     this.emailUtilisateur = emailUtilisateur;

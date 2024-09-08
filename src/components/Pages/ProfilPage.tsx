@@ -1,5 +1,13 @@
-import React from "react";
-import { Card, Container, Row, Col, Badge } from "react-bootstrap";
+import React, { useState } from "react";
+import {
+  Card,
+  Container,
+  Row,
+  Col,
+  Badge,
+  Button,
+  Form,
+} from "react-bootstrap";
 import {
   FaUser,
   FaEnvelope,
@@ -10,22 +18,39 @@ import {
   FaBriefcase,
 } from "react-icons/fa";
 import { useAuth } from "../../Context/auth/AuthContextHook";
+import { User } from "../../models/User"; // Assurez-vous d'importer User depuis le bon chemin
+import { updateUser } from "../../services/apiService"; // Fonction pour mettre à jour l'utilisateur
 
-// Composant de la page de profil
+// Fonction pour formater les dates
+const formatDate = (date: string) => {
+  const dateObj = new Date(date);
+  return dateObj.toLocaleDateString("fr-FR");
+};
+
 const UserProfile: React.FC = () => {
   const { user } = useAuth();
 
-  // Vérifie que l'utilisateur est défini
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [formData, setFormData] = useState<User>(user as User);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await updateUser(formData); // Assurez-vous que cette fonction met à jour l'utilisateur
+      setEditMode(false);
+    } catch (error) {
+      console.log("Erreur lors de la mise à jour", error);
+    }
+  };
+
   if (!user) {
     return <p>Chargement des informations de l'utilisateur...</p>;
   }
-
-  const formatDate = (dateArray: [number, number, number]) => {
-    const [year, month, day] = dateArray;
-    return `${day.toString().padStart(2, "0")}/${month
-      .toString()
-      .padStart(2, "0")}/${year}`;
-  };
 
   return (
     <Container className="mt-5">
@@ -37,46 +62,89 @@ const UserProfile: React.FC = () => {
                 <FaUser size={50} className="text-primary me-3" />
                 <div>
                   <h2 className="mb-0">
-                    {user.prenomUtilisateur} {user.nomUtilisateur}{" "}
-                    {user.isactive ? (
+                    {formData.prenomUtilisateur} {formData.nomUtilisateur}{" "}
+                    {formData.isactive ? (
                       <FaCheckCircle className="text-success" />
                     ) : (
                       <FaTimesCircle className="text-danger" />
                     )}
                   </h2>
-                  <Badge bg="secondary">{user.roleDTO.nomRole}</Badge>
+                  <Badge bg="secondary">{formData.roleDTO.nomRole}</Badge>
                 </div>
               </div>
-              <Row>
-                <Col md={6}>
-                  <p>
-                    <FaEnvelope className="me-2" />
-                    <strong>Email:</strong> {user.emailUtilisateur}
-                  </p>
-                  <p>
-                    <FaCalendarAlt className="me-2" />
-                    <strong>Date de création:</strong>{" "}
-                    {formatDate(user.dateCreation)}
-                  </p>
-                  <p>
-                    <FaBriefcase className="me-2" />
-                    <strong>Numéro de stagiaire:</strong>{" "}
-                    {user.numeroBeneficiaireStagiaire}
-                  </p>
-                </Col>
-                <Col md={6}>
-                  <p>
-                    <FaBirthdayCake className="me-2" />
-                    <strong>Date de naissance:</strong>{" "}
-                    {formatDate(user.dateNaissance)}
-                  </p>
-                  <p>
-                    <FaCalendarAlt className="me-2" />
-                    <strong>Statut:</strong>{" "}
-                    {user.isactive ? "Actif 🟢" : "Inactif 🔴"}
-                  </p>
-                </Col>
-              </Row>
+              <Form onSubmit={handleSubmit}>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group controlId="email">
+                      <Form.Label>
+                        <FaEnvelope className="me-2" /> Email
+                      </Form.Label>
+                      <Form.Control
+                        type="email"
+                        name="emailUtilisateur"
+                        value={formData.emailUtilisateur}
+                        onChange={handleInputChange}
+                        readOnly={!editMode}
+                      />
+                    </Form.Group>
+                    <Form.Group controlId="dateCreation">
+                      <Form.Label>
+                        <FaCalendarAlt className="me-2" /> Date de création
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="dateCreation"
+                        value={formatDate(formData.dateCreation)}
+                        onChange={handleInputChange}
+                        readOnly
+                      />
+                    </Form.Group>
+                    <Form.Group controlId="numeroBeneficiaire">
+                      <Form.Label>
+                        <FaBriefcase className="me-2" /> Numéro de stagiaire
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="numeroBeneficiaireStagiaire"
+                        value={formData.numeroBeneficiaireStagiaire ?? ""}
+                        onChange={handleInputChange}
+                        readOnly={!editMode}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group controlId="dateNaissance">
+                      <Form.Label>
+                        <FaBirthdayCake className="me-2" /> Date de naissance
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="dateNaissance"
+                        value={formData.dateNaissance ?? ""}
+                        onChange={handleInputChange}
+                        readOnly={!editMode}
+                      />
+                    </Form.Group>
+                    <Form.Group controlId="statut">
+                      <Form.Label>
+                        <FaCalendarAlt className="me-2" /> Statut
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={formData.isactive ? "Actif 🟢" : "Inactif 🔴"}
+                        readOnly
+                      />
+                    </Form.Group>
+                  </Col>
+                </Row>
+                <Button
+                  variant={editMode ? "success" : "primary"}
+                  type={editMode ? "submit" : "button"}
+                  onClick={() => setEditMode(!editMode)}
+                >
+                  {editMode ? "Enregistrer" : "Modifier"}
+                </Button>
+              </Form>
             </Card.Body>
           </Card>
         </Col>

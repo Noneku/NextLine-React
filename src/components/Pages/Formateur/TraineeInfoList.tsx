@@ -1,47 +1,23 @@
-import React from "react";
-
-// Définition du type pour les informations sur les stagiaires
-type TraineeInfo = {
-  id: number;
-  name: string;
-  email: string;
-  company: string;
-  sentDate: string;
-};
+import React, { useEffect, useState } from "react";
+import { User } from "../../../models/User";
+import { getAllInterns } from "../../../services/apiService";
 
 // Composant principal qui affiche les informations sur les stagiaires
 const TraineeInfoList: React.FC = () => {
-  // Exemple de données de stagiaires
-  const trainees: TraineeInfo[] = [
-    {
-      id: 1,
-      name: "Alice Dupont",
-      email: "alice.dupont@example.com",
-      company: "Entreprise ABC",
-      sentDate: "2024-09-01",
-    },
-    {
-      id: 2,
-      name: "Bob Martin",
-      email: "bob.martin@example.com",
-      company: "Société XYZ",
-      sentDate: "2024-09-02",
-    },
-    {
-      id: 3,
-      name: "Claire Petit",
-      email: "claire.petit@example.com",
-      company: "Startup Innov",
-      sentDate: "2024-09-03",
-    },
-    {
-      id: 4,
-      name: "Hamid Dupont",
-      email: "h.dupont@example.com",
-      company: "Raïb Innov",
-      sentDate: "2024-08-07",
-    },
-  ];
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchInterns = async () => {
+      try {
+        const internsData = await getAllInterns();
+        setUsers(internsData);
+      } catch (error) {
+        console.log("Problème lors de la récupération des stagiaires", error);
+      }
+    };
+
+    fetchInterns();
+  }, []);
 
   return (
     <div style={styles.container}>
@@ -49,21 +25,37 @@ const TraineeInfoList: React.FC = () => {
         📋 Liste des Stagiaires ayant envoyé leur fiche de renseignement
       </h2>
       <ul style={styles.list}>
-        {trainees.map((trainee) => (
-          <li key={trainee.id} style={styles.card}>
-            <h3 style={styles.name}>👤 {trainee.name}</h3>
+        {users.map((user) => (
+          <li key={user.idUtilisateur} style={styles.card}>
+            <h3 style={styles.name}>
+              👤 {user.nomUtilisateur} {user.prenomUtilisateur}
+            </h3>
             <p style={styles.info}>
-              🏢 Entreprise : <strong>{trainee.company}</strong>
+              🏢 Compte Actif :{" "}
+              <strong>{user.isactive ? "Actif 🟢" : "Inactif 🔴"}</strong>
             </p>
             <p style={styles.info}>
-              📧 E-mail d'envoi :{" "}
-              <a href={`mailto:${trainee.email}`} style={styles.email}>
-                {trainee.email}
+              📧 E-mail :{" "}
+              <a href={`mailto:${user.emailUtilisateur}`} style={styles.email}>
+                {user.emailUtilisateur}
               </a>
             </p>
             <p style={styles.info}>
-              📅 Date d'envoi : <em>{trainee.sentDate}</em>
+              📅 Date de Naissance :{" "}
+              <em>{user.dateNaissance ?? "Non renseignée"}</em>
             </p>
+            <p style={styles.info}>
+              🗓 Date de Création : <em>{user.dateCreation}</em>
+            </p>
+            <p style={styles.info}>
+              🏷 Rôle : <strong>{user.roleDTO.nomRole}</strong>
+            </p>
+            {user.numeroBeneficiaireStagiaire && (
+              <p style={styles.info}>
+                🆔 Numéro de Bénéficiaire :{" "}
+                <strong>{user.numeroBeneficiaireStagiaire}</strong>
+              </p>
+            )}
           </li>
         ))}
       </ul>
@@ -74,7 +66,7 @@ const TraineeInfoList: React.FC = () => {
 // Styles en ligne pour le composant
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    maxWidth: "0 auto",
+    maxWidth: "1000px", // Corrigé pour être une largeur réelle
     margin: "0 auto",
     padding: "20px",
     borderRadius: "8px",

@@ -1,6 +1,6 @@
 // src/services/apiService.ts
 import axios from "axios";
-import { User } from "../Context/auth/AuthContextType"; // Assure-toi d'importer les bons types
+import { User } from "../models/User";
 
 const API_BASE_URL = "http://localhost:8081/api-nextline"; // Change l'URL selon ton API
 
@@ -13,6 +13,21 @@ const apiClient = axios.create({
   },
 });
 
+// Fonction pour mettre à jour les informations d'un utilisateur
+export const updateUser = async (user: User): Promise<User> => {
+  try {
+    const response = await apiClient.put(
+      `http://localhost:8081/api-nextline/user/update-user/${user.idUtilisateur}`,
+      user
+    );
+    return response.data; // Assure-toi que la structure des données correspond à ce que tu attends
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de l'utilisateur:", error);
+    throw error;
+  }
+};
+
+// Les autres fonctions restent inchangées
 export const loginUser = async (
   login: string,
   password: string
@@ -60,16 +75,15 @@ export const createUser = async (newUser: User): Promise<void> => {
   }
 };
 
-/*
-export const getAllUsers = async (): Promise<User[]> => {
+export const getAllInterns = async (): Promise<User[]> => {
   try {
     const response = await apiClient.get(
-      "http://localhost:8081/api-nextline/user"
+      "http://localhost:8081/api-nextline/user/all-users"
     );
 
-    return response.data || undefined;
+    return response.data;
   } catch (error) {
     console.error("Erreur lors de la récupération des stagiaires", error);
+    throw error;
   }
 };
-*/
