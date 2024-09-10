@@ -2,6 +2,7 @@ import React, { createContext, useState, ReactNode } from "react";
 import { AuthContextType } from "./AuthContextType";
 import { User } from "../../models/User";
 import { loginUser } from "../../services/apiService";
+import FirstConnexionForm from "./FirstConnexionForm";
 
 // Créer le contexte d'authentification
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -19,6 +20,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     try {
       const { user: userData, token } = await loginUser(login, password);
 
+      // Stocker le token et l'utilisateur après une connexion réussie
       setIsAuthenticated(true);
       setUser(userData);
       localStorage.setItem("authToken", token);
@@ -36,7 +38,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout, user }}>
-      {children}
+      {isAuthenticated && !user?.isactive ? <FirstConnexionForm /> : children}
     </AuthContext.Provider>
   );
 };

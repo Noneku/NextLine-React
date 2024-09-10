@@ -21,9 +21,7 @@ const TraineeInfoList: React.FC = () => {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.title}>
-        📋 Liste des Stagiaires ayant envoyé leur fiche de renseignement
-      </h2>
+      <h2 style={styles.title}>📋 Liste des Stagiaires</h2>
       <ul style={styles.list}>
         {users.map((user) => (
           <li key={user.idUtilisateur} style={styles.card}>
@@ -48,7 +46,7 @@ const TraineeInfoList: React.FC = () => {
               🗓 Date de Création : <em>{user.dateCreation}</em>
             </p>
             <p style={styles.info}>
-              🏷 Rôle : <strong>{user.roleDTO.nomRole}</strong>
+              🏷 Rôle : <strong>{user.roleDTO?.nomRole}</strong>
             </p>
             {user.numeroBeneficiaireStagiaire && (
               <p style={styles.info}>

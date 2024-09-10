@@ -17,10 +17,10 @@ const apiClient = axios.create({
 export const updateUser = async (user: User): Promise<User> => {
   try {
     const response = await apiClient.put(
-      `http://localhost:8081/api-nextline/user/update-user/${user.idUtilisateur}`,
+      `http://localhost:8081/api-nextline/user/update-user/${user.id}`,
       user
     );
-    return response.data; // Assure-toi que la structure des données correspond à ce que tu attends
+    return response.data;
   } catch (error) {
     console.error("Erreur lors de la mise à jour de l'utilisateur:", error);
     throw error;
