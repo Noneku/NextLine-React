@@ -28,7 +28,6 @@ const TraineeRegistrationForm: React.FC = () => {
 
     try {
       await createUser(formData); // Appel de la fonction createUser avec les données du formulaire
-      alert("Utilisateur créé avec succès !");
     } catch (error) {
       console.error("Erreur lors de la création de l'utilisateur", error);
     }

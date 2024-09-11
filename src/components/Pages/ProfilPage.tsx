@@ -69,7 +69,7 @@ const UserProfile: React.FC = () => {
                       <FaTimesCircle className="text-danger" />
                     )}
                   </h2>
-                  <Badge bg="secondary">{formData.roleDTO.nomRole}</Badge>
+                  <Badge bg="secondary">{}</Badge>
                 </div>
               </div>
               <Form onSubmit={handleSubmit}>

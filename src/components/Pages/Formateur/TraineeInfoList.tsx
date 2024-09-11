@@ -24,7 +24,7 @@ const TraineeInfoList: React.FC = () => {
       <h2 style={styles.title}>📋 Liste des Stagiaires</h2>
       <ul style={styles.list}>
         {users.map((user) => (
-          <li key={user.idUtilisateur} style={styles.card}>
+          <li key={user.id} style={styles.card}>
             <h3 style={styles.name}>
               👤 {user.nomUtilisateur} {user.prenomUtilisateur}
             </h3>

@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Card, Row, Col, Button } from "react-bootstrap";
 import { FaBuilding, FaEnvelope } from "react-icons/fa";
+import EmailModal from "./EmailModal";
 
 // Définition du type pour les informations sur les entreprises
 type CompanyInfo = {
@@ -52,6 +53,7 @@ const CompanyList: React.FC = () => {
   return (
     <Container className="mt-5">
       <h2 className="mb-4 text-center">🏢 Liste des Entreprises</h2>
+      <EmailModal />
       <Row>
         {companies.map((company) => (
           <Col md={4} key={company.id} className="mb-4">

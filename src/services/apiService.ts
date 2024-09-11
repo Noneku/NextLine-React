@@ -69,6 +69,7 @@ export const createUser = async (newUser: User): Promise<void> => {
       "http://localhost:8081/api-nextline/user/create-user",
       newUser
     );
+    console.log("Voici la réponse de l'api", response);
     return response.data;
   } catch (error) {
     console.error("Erreur lors de l'enregistrement de l'utilisateur", error);
@@ -85,5 +86,26 @@ export const getAllInterns = async (): Promise<User[]> => {
   } catch (error) {
     console.error("Erreur lors de la récupération des stagiaires", error);
     throw error;
+  }
+};
+
+export const sendEmailBusiness = async (
+  idUser: string | null | undefined,
+  emailBusiness: string
+): Promise<void> => {
+  const dataEmail = {
+    id_utilisateur: idUser,
+    email_entreprise: emailBusiness,
+  };
+
+  try {
+    await apiClient.post(
+      `http://localhost:8081/api-nextline/liens-formulaires/generate`,
+      dataEmail
+    );
+
+    console.log("Psartek frr");
+  } catch (error) {
+    console.error("Erreur envoie du mail", error);
   }
 };
