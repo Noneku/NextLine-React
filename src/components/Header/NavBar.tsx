@@ -1,10 +1,7 @@
-import React, { useState } from "react";
+// NavBar.js
+import React from "react";
 import { useAuth } from "../../Context/auth/AuthContextHook";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import { Button } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Button, Container } from "react-bootstrap";
 import {
   FaSignInAlt,
   FaSignOutAlt,
@@ -14,16 +11,16 @@ import {
   FaEnvelope,
   FaUser,
   FaRocket,
+  FaBuilding,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import EmailModal from "../Pages/Stagiaire/EmailModal";
-import { FaBuilding } from "react-icons/fa6";
 import LoginForm from "../Forms/LoginForm";
 
-const NavBar: React.FC = () => {
+const NavBar = () => {
   const { isAuthenticated, logout, user } = useAuth();
-  const [showEmailModal, setShowEmailModal] = useState(false);
-  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showEmailModal, setShowEmailModal] = React.useState(false);
+  const [showLoginForm, setShowLoginForm] = React.useState(false);
 
   const handleShowEmailModal = () => setShowEmailModal(true);
   const handleCloseEmailModal = () => setShowEmailModal(false);
@@ -37,7 +34,6 @@ const NavBar: React.FC = () => {
         bg="light"
         expand="lg"
         className="shadow-sm p-3 mb-5 bg-white rounded sticky-top"
-        style={{ zIndex: 1000 }}
       >
         <Container>
           <Navbar.Brand href="#home" className="fw-bold text-primary">
@@ -75,17 +71,12 @@ const NavBar: React.FC = () => {
                     <Link to="/profile" className="dropdown-item">
                       <FaUser className="me-2" /> Profile
                     </Link>
-                    {user?.roleDTO.nomRole === "FORMATEUR" && (
-                      <>
-                        <Link to="/internList" className="dropdown-item">
-                          <FaRocket className="me-2" /> Ajouter un stagiaire
-                        </Link>
-                        <Link to="/viewInterns" className="dropdown-item">
-                          <FaUser className="me-2" /> Consulter les stagiaires
-                        </Link>
-                      </>
+                    {user?.roleDTO?.nomRole === "FORMATEUR" && (
+                      <Link to="/internList" className="dropdown-item">
+                        <FaRocket className="me-2" /> Ajouter un stagiaire
+                      </Link>
                     )}
-                    {user?.roleDTO.nomRole === "STAGIAIRE" && (
+                    {user?.roleDTO?.nomRole === "STAGIAIRE" && (
                       <>
                         <Link
                           to="#"
@@ -109,7 +100,7 @@ const NavBar: React.FC = () => {
                     </NavDropdown.Item>
                   </NavDropdown>
                   <Navbar.Text className="me-3 text-muted">
-                    {user?.roleDTO.nomRole}
+                    {user?.roleDTO?.nomRole}
                   </Navbar.Text>
                 </>
               ) : (

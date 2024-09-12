@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaUser,
   FaEnvelope,
@@ -11,31 +11,46 @@ import { useAuth } from "../../Context/auth/AuthContextHook";
 import { updateUser } from "../../services/apiService";
 
 const FirstConnexionForm: React.FC = () => {
-  const UserConnect = useAuth();
+  const { user: userFromContext } = useAuth();
 
-  console.log("Voici les informations de l'utilisateur connecté", UserConnect);
-
+  // Définir un état initial pour 'user'
   const [user, setUser] = useState<User>({
-    id: UserConnect.user?.id,
-    nomUtilisateur: UserConnect.user?.nomUtilisateur,
-    prenomUtilisateur: UserConnect.user?.prenomUtilisateur,
-    emailUtilisateur: UserConnect.user?.emailUtilisateur,
+    id:
+      typeof userFromContext?.id === "number" ? userFromContext.id : undefined,
+    nomUtilisateur: userFromContext?.nomUtilisateur || "",
+    prenomUtilisateur: userFromContext?.prenomUtilisateur || "",
+    emailUtilisateur: userFromContext?.emailUtilisateur || "",
     dateCreation: new Date().toISOString().split("T")[0],
     isactive: true,
     numeroBeneficiaireStagiaire: "",
     numeroSecuStagiaire: "",
     mdpUtilisateur: "",
-    utilisateurLogin: UserConnect.user?.utilisateurLogin,
-    dateNaissance: null,
-    roleDTO: UserConnect.user?.roleDTO,
+    utilisateurLogin: userFromContext?.utilisateurLogin || "",
+    dateNaissance: userFromContext?.dateNaissance || null,
+    roleDTO: userFromContext?.roleDTO || { nomRole: "" },
   });
+
+  useEffect(() => {
+    if (userFromContext) {
+      setUser((prevUser) => ({
+        ...prevUser,
+        id: userFromContext.id,
+        nomUtilisateur: userFromContext.nomUtilisateur,
+        prenomUtilisateur: userFromContext.prenomUtilisateur,
+        emailUtilisateur: userFromContext.emailUtilisateur,
+        utilisateurLogin: userFromContext.utilisateurLogin,
+        dateNaissance: userFromContext.dateNaissance,
+        roleDTO: userFromContext.roleDTO,
+      }));
+    }
+  }, [userFromContext]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
 
     setUser((prevUser) => ({
-      ...prevUser, // Copie les propriétés existantes
-      [name]: type === "checkbox" ? checked : value, // Met à jour la propriété modifiée
+      ...prevUser,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -49,7 +64,6 @@ const FirstConnexionForm: React.FC = () => {
     }
 
     console.log("Utilisateur soumis :", user);
-    // Ajoutez ici la logique pour envoyer le formulaire à votre API ou traiter les données
   };
 
   return (
@@ -154,7 +168,7 @@ const FirstConnexionForm: React.FC = () => {
 
         <div style={styles.formGroup}>
           <label htmlFor="numeroSecuStagiaire" style={styles.label}>
-            <FaHashtag /> Numéro Sécurité Social :
+            <FaHashtag /> Numéro Sécurité Sociale :
           </label>
           <input
             type="text"
@@ -207,9 +221,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "10px",
     borderRadius: "4px",
     border: "1px solid #ccc",
-  },
-  checkbox: {
-    marginLeft: "10px",
   },
   button: {
     padding: "10px 15px",
