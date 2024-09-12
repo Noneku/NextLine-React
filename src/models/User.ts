@@ -9,7 +9,7 @@ export class User {
   isactive: boolean;
   numeroBeneficiaireStagiaire?: string | null; // Utilisation de ? pour indiquer que la propriété est optionnelle (correspond à String en Java)
   dateNaissance?: string | null; // Utilisation de string pour LocalDate
-  roleDTO?: RoleDTO;
+  roleDTO: RoleDTO;
   utilisateurLogin?: string;
 
   // Ces propriétés ne seront pas incluses lors de la sérialisation/désérialisation JSON

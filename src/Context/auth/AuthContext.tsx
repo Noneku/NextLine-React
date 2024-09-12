@@ -2,7 +2,7 @@ import React, { createContext, useState, ReactNode } from "react";
 import { AuthContextType } from "./AuthContextType";
 import { User } from "../../models/User";
 import { loginUser } from "../../services/apiService";
-import FirstConnexionForm from "./FirstConnexionForm";
+import FirstConnexionForm from "../../components/Forms/FirstConnexionForm";
 
 // Créer le contexte d'authentification
 export const AuthContext = createContext<AuthContextType | undefined>(

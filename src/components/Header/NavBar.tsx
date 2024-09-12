@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../Context/auth/AuthContextHook";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import LoginForm from "../Forms/LoginForm";
 import { Button } from "react-bootstrap";
 import {
   FaSignInAlt,
@@ -14,18 +13,23 @@ import {
   FaCogs,
   FaEnvelope,
   FaUser,
+  FaRocket,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import EmailModal from "../Pages/Stagiaire/EmailModal";
+import { FaBuilding } from "react-icons/fa6";
+import LoginForm from "../Forms/LoginForm";
 
 const NavBar: React.FC = () => {
   const { isAuthenticated, logout, user } = useAuth();
-  const [showLoginForm, setShowLoginForm] = React.useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+
+  const handleShowEmailModal = () => setShowEmailModal(true);
+  const handleCloseEmailModal = () => setShowEmailModal(false);
 
   const handleShowLoginForm = () => setShowLoginForm(true);
   const handleCloseLoginForm = () => setShowLoginForm(false);
-
-  console.log("isAuthenticated:", isAuthenticated);
-  console.log("user:", user);
 
   return (
     <>
@@ -71,12 +75,31 @@ const NavBar: React.FC = () => {
                     <Link to="/profile" className="dropdown-item">
                       <FaUser className="me-2" /> Profile
                     </Link>
-                    {user?.roleDTO.nomRole === "FORMATEUR" &&
-                      isAuthenticated && (
+                    {user?.roleDTO.nomRole === "FORMATEUR" && (
+                      <>
                         <Link to="/internList" className="dropdown-item">
-                          <FaUser className="me-2" /> Liste des stagiaires
+                          <FaRocket className="me-2" /> Ajouter un stagiaire
                         </Link>
-                      )}
+                        <Link to="/viewInterns" className="dropdown-item">
+                          <FaUser className="me-2" /> Consulter les stagiaires
+                        </Link>
+                      </>
+                    )}
+                    {user?.roleDTO.nomRole === "STAGIAIRE" && (
+                      <>
+                        <Link
+                          to="#"
+                          className="dropdown-item"
+                          onClick={handleShowEmailModal}
+                        >
+                          <FaEnvelope className="me-2" /> Démarrer une procédure
+                        </Link>
+                        <Link to="#" className="dropdown-item">
+                          <FaBuilding className="me-2" /> Consulter les
+                          entreprises
+                        </Link>
+                      </>
+                    )}
                     <NavDropdown.Item href="#settings">
                       <FaCogs className="me-2" /> Paramètres
                     </NavDropdown.Item>
@@ -104,6 +127,7 @@ const NavBar: React.FC = () => {
       </Navbar>
 
       {showLoginForm && <LoginForm handleClose={handleCloseLoginForm} />}
+      {showEmailModal && <EmailModal handleClose={handleCloseEmailModal} />}
     </>
   );
 };

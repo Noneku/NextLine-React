@@ -6,6 +6,8 @@ import ProfilPage from "./components/Pages/ProfilPage";
 import TraineeRegistrationForm from "./components/Forms/TraineeRegistrationForm";
 import { AuthProvider } from "./Context/auth/AuthContext";
 import BusinessListPage from "./components/Pages/Stagiaire/BusinessListPage";
+import Main from "./components/Main/Main";
+import Footer from "./components/Main/Footer";
 
 function App() {
   return (
@@ -15,10 +17,13 @@ function App() {
         <Routes>
           <Route path="/internList" element={<TraineeInfoList />} />
           <Route path="/receivedList" element={<ReceivedFormsList />} />
-          <Route path="/createUser" element={<TraineeRegistrationForm />} />
+          <Route path="/addIntern" element={<TraineeRegistrationForm />} />
           <Route path="/profile" element={<ProfilPage />} />
-          <Route path="/businessList" element={<BusinessListPage />} />
+          <Route path="/companies" element={<BusinessListPage />} />
         </Routes>
+
+        <Main />
+        <Footer />
       </Router>
     </AuthProvider>
   );

@@ -1,7 +1,6 @@
 import React from "react";
-import { Container, Card, Row, Col, Button } from "react-bootstrap";
-import { FaBuilding, FaEnvelope } from "react-icons/fa";
-import EmailModal from "./EmailModal";
+import { Container, Card, Row, Col } from "react-bootstrap";
+import { FaBuilding } from "react-icons/fa";
 
 // Définition du type pour les informations sur les entreprises
 type CompanyInfo = {
@@ -46,36 +45,27 @@ const CompanyList: React.FC = () => {
       .padStart(2, "0")}/${year}`;
   };
 
-  const handleEmailClick = (email: string) => {
-    window.location.href = `mailto:${email}`;
-  };
-
   return (
     <Container className="mt-5">
       <h2 className="mb-4 text-center">🏢 Liste des Entreprises</h2>
-      <EmailModal />
       <Row>
         {companies.map((company) => (
           <Col md={4} key={company.id} className="mb-4">
-            <Card className="shadow-sm p-3">
-              <Card.Body>
-                <div className="d-flex align-items-center mb-3">
-                  <FaBuilding size={40} className="text-primary me-3" />
-                  <div>
-                    <h3 className="mb-1">{company.name}</h3>
+            <Card className="shadow-sm p-3 h-100">
+              <Card.Body className="d-flex flex-column justify-content-between">
+                <div>
+                  <div className="d-flex align-items-center mb-3">
+                    <FaBuilding size={40} className="text-primary me-3" />
+                    <h4 className="mb-0">{company.name}</h4>
+                  </div>
+                  <div className="mb-3">
                     <p className="mb-1">
-                      <strong>Adresse:</strong> {company.address}
+                      <strong>Adresse :</strong> {company.address}
                     </p>
                     <p className="mb-1">
-                      <strong>Date de création:</strong>{" "}
+                      <strong>Date de création :</strong>{" "}
                       {formatDate(company.foundedDate)}
                     </p>
-                    <Button
-                      variant="primary"
-                      onClick={() => handleEmailClick(company.email)}
-                    >
-                      <FaEnvelope className="me-2" /> Envoyer un e-mail
-                    </Button>
                   </div>
                 </div>
               </Card.Body>
